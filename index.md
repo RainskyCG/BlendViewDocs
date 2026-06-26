@@ -1,5 +1,4 @@
-﻿# BlendView User Guide
-
+﻿
 BlendView adds a Blender-style editing workflow to Unreal Editor: mouse viewport navigation, modal G/R/S transforms, temporary snapping, and graph node editing.
 
 It is designed for users who frequently place level actors, adjust Blueprint components, align geometry, or organize Blueprint and Material graphs. BlendView only affects editor workflows and does not change game runtime behavior.
