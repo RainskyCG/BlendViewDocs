@@ -122,7 +122,6 @@ Snap targets, snap base mode, and snap axis thickness can be adjusted in the plu
 - `Ctrl + Shift + LMB`: click a Material node to preview it directly, without clicking the small node preview button.
 - `Ctrl + X`: delete and reconnect nodes. Compared with Unreal's native `Shift + Delete`, this also supports Material nodes.
 - `Shift + D`: duplicate nodes and enter move mode.
-- `Ctrl + RMB` drag: cut node connections by drawing across wires.
 
 Graph shortcuts can be customized in BlendView settings. The graph connection cutting modifier can be changed to `Ctrl`, `Alt`, or `Shift`.
 
