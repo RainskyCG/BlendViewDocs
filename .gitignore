@@ -1,0 +1,16 @@
+# Local editor/system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node/static-site build output
+node_modules/
+dist/
+build/
+.vitepress/cache/
+.vitepress/dist/
+
+# Local release/output folders
+.release/
+temp/
