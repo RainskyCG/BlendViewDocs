@@ -1,208 +1,203 @@
-﻿# BlendView User Guide
+# BlendView User Guide
 
-BlendView adds a Blender-style editing workflow to Unreal Editor: mouse viewport navigation, modal G/R/S transforms, temporary snapping, and graph node editing.
+[English](index.md) | [简体中文](zh-CN.md)
 
-It is designed for users who frequently place level actors, adjust Blueprint components, align geometry, or organize Blueprint and Material graphs. BlendView only affects editor workflows and does not change game runtime behavior.
+## Quick Start
 
-## Core Features
-
-- **Mouse viewport navigation**: orbit, pan, and dolly views with middle mouse workflows.
-- **G/R/S transforms**: move, rotate, and scale selected actors, components, or graph nodes with modal shortcuts.
-- **Axis and plane constraints**: lock transforms to X/Y/Z axes or exclude one axis for planar transforms.
-- **Temporary snapping**: hold `Ctrl` during transforms to snap to grids, vertices, edges, edge midpoints, or surfaces.
-- **Snap base reset**: press `B` to choose the base point that should align to the snap target.
-- **Duplicate and move**: press `Shift + D` to duplicate and immediately enter move mode.
-- **Graph workflow**: move, rotate, scale, duplicate, preview, reconnect, and cut graph nodes with consistent shortcuts.
-
-## Installation and Activation
-
-1. Enable the `BlendView` plugin in Unreal Editor and restart the editor.
-2. Find the BlendView icon in the top toolbar and make sure the main toggle is enabled.
+### Enable / Disable
 
 ![BlendView toolbar toggle](assets/images/toolbar-toggle.jpg)
 
-## Mouse Viewport Navigation
+Use the BlendView toolbar button to temporarily enable or disable the plugin.
+
+![Feature module settings](assets/images/feature-module-settings.jpg)
+
+You can also disable individual modules in the settings Feature group: navigation, G/R/S, snapping, center toolbar, 3D Cursor, pie menu, command search, quick favorites, Move to Folder, and graph tools.
+
+## Viewport Navigation
 
 ![Mouse viewport navigation](assets/gifs/mouse-navigation.gif)
 
-- `MMB`: orbit the viewport.
-- `Shift + MMB`: pan the viewport.
-- `Ctrl + MMB`: dolly the viewport.
+Use Blender-style middle mouse navigation in UE scene viewports.
+
+- `MMB`: orbit view.
+- `Shift + MMB`: pan view.
+- `Ctrl + MMB`: dolly / zoom view.
 
 ![Axis view alignment](assets/gifs/axis-view-align.gif)
 
-- `Alt + MMB`: align to the nearest axis direction and switch to an orthographic view.
-- Hold `RMB` and use `W/A/S/D/Q/E`: fly through the viewport.
-- Hold `Shift` during RMB flight: increase camera speed by the speed factor. Default: `5`.
-- Hold `Alt` during RMB flight: decrease camera speed by the speed factor. Default: `5`.
+- `Alt + MMB`: align to the nearest axis view.
+- Hold `Shift` during RMB flight: speed up.
 
-Mouse navigation is available in supported editor scene viewports, including Level, Static Mesh preview, Skeletal Mesh preview, Animation preview, Blueprint preview, Component / Child Actor preview, and Material preview viewports.
+To avoid conflicts with transform commands, BlendView blocks transform modules while RMB flight is active. This means `RMB + S` keeps working as backward flight instead of starting Scale.
 
-## G/R/S Transforms
+## G/R/S Transform
 
-- `G`: move the selection.
-- `R`: rotate the selection.
-- `S`: scale the selection.
-- `Shift + D`: duplicate the selection and enter move mode.
-- `Alt + G`: reset location.
-- `Alt + R`: reset rotation.
-- `Alt + S`: reset scale.
+- `G`: move.
+- `R`: rotate.
+- `S`: scale.
+- `Shift + D`: duplicate, then move.
+- `Alt + G/R/S`: reset location / rotation / scale.
 
-When RMB viewport flight is active, BlendView automatically pauses G/R/S transform input so `W/A/S/D/Q/E` flight controls do not conflict with transform shortcuts such as `S`.
+G/R/S enters a temporary transform state. You can use optional subcommands, with a Blender-style bottom hint bar:
 
-During a transform:
+![Transform hint bar](assets/images/transform-feedback.jpg)
 
-- `LMB` / `Enter` / `Space`: confirm the transform.
-- `RMB` / `Esc`: cancel the transform and restore the previous state.
-- `Shift`: fine adjustment.
-- Numeric input: enter an exact move distance, rotation angle, or scale value. Translation units default to meters and can be changed to Unreal centimeters in the plugin settings. Tail minus input is supported, so `5-` is interpreted as `-5`.
-- `Backspace`: delete the current numeric input.
-- `H`: hide or show the bottom hint bar.
-- Press `R` twice: trackball / free rotation.
-
-### Axis and Plane Constraints
+| Key | Function |
+| --- | --- |
+| `LMB`, `Enter`, `Space` | Confirm |
+| `RMB`, `Esc` | Cancel |
+| `Shift` | Precision mode, slower pointer movement |
+| Number keys | Exact numeric value |
+| `Backspace` | Delete numeric input |
+| `X/Y/Z` | Axis constraint |
+| `X/X`, `Y/Y`, `Z/Z` | Toggle global / local |
+| `Shift + X/Y/Z` | Plane constraint |
+| `MMB` | Pick nearest axis |
+| `Shift + MMB` | Pick nearest plane |
+| `C` | Clear constraint |
+| `Ctrl` | Temporary snap |
+| `B` | Reset snap base |
+| `O` | Edit Actor pivot |
+| `O/O` | Enter UE Edit Pivot mode |
+| `H` | Show / hide bottom hint bar |
+| `R/R` | Free rotation |
 
 <video src="assets/videos/axis-plane-constraints.mp4" controls muted loop playsinline width="100%"></video>
 
-- `X` / `Y` / `Z`: constrain to a single X, Y, or Z axis.
-- Press `X` / `Y` / `Z` twice: switch between global and local axis constraints.
-- `Shift + X/Y/Z`: exclude that axis and transform within the remaining two-axis plane.
-- `MMB`: automatically choose the closest axis constraint.
-- `Shift + MMB`: automatically choose a plane constraint.
-- `C`: clear the active axis or plane constraint.
+- Press `G`, then `X`: move along X.
+- Press `G`, then `Shift + Z`: move on the XY plane.
+- Press `R`, then `Z`: rotate around Z.
+- Press `S`, then `X`: scale on X.
 
 ## Snapping
 
 <video src="assets/videos/temporary-snap.mp4" controls muted loop playsinline width="100%"></video>
 
-- Hold `Ctrl`: enable temporary snapping during a transform.
+Snapping aligns a source point on the selection to a target point in the scene.
+
+- Hold `Ctrl` during `G`: enable temporary snap.
 
 <video src="assets/videos/reset-snap-base.mp4" controls muted loop playsinline width="100%"></video>
 
-- Press `B`: reset the snap base.
+- `B`: reset snap base.
 
-Typical workflow:
+## Center Toolbar
 
-1. Press `G` to move an object.
-2. Press `B` to choose a corner or reference point as the snap base.
-3. Hold `Ctrl` to align that base point to another object's vertex, edge midpoint, or surface.
+The top center toolbar provides quick access to snapping settings and transform pivot settings.
 
-Move snapping supports:
+### Snapping Settings
 
-- Grid.
-- Vertex.
-- Edge.
-- Edge midpoint.
-- Surface.
+![Center snap toolbar](assets/images/center-snap-toolbar.jpg)
 
-Temporary snapping also works with axis constraints, plane constraints, and supported orthographic views.
+**General:**
 
-For rotation and scale, holding `Ctrl` uses Unreal Editor's current rotation / scale snap steps.
+- **UE Snap Capture**: Uses UE native snap capture to assist BlendView snapping.
+- **Structural Edge Filter**: Prioritizes structural edges and ignores points or lines that do not affect the structure.
+- **Align Rotation to Target**: Rotates the object to align with the target surface or direction while snapping.
 
-### Snap Settings
+**Snap Source:**
 
-![Snap settings](assets/images/snap-settings.jpg)
+- **Closest**: Uses the closest point on the selected object as the snap source.
+- **Pivot**: Uses the object pivot as the snap source.
 
-- **UE Snap Capture**: uses Unreal Editor's current grid, rotation, and scale snap settings for BlendView transforms.
-- **Structural Edge Filter**: filters internal triangle edges on continuous surfaces, making edge snapping favor clear structural boundaries.
-- **Snap base modes**: Closest / Pivot. Default: Pivot.
-- **Snap targets**: Grid / Vertex / Edge / Edge midpoint / Surface.
+**Snap Targets:**
 
-Snap targets, snap base mode, and snap axis thickness can be adjusted in the plugin settings.
+- **Grid**: Allows snapping to the viewport grid.
+- **Vertex**: Allows snapping to mesh vertices.
+- **Edge**: Allows snapping to mesh edges.
+- **Edge Midpoint**: Allows snapping to edge midpoints.
+- **Face**: Allows snapping to mesh surfaces.
 
-## Graph Operations
+### Transform Pivot
+
+![Center pivot toolbar](assets/images/center-pivot-toolbar.jpg)
+
+- **Bounding Box Center**: Uses the center of the selected objects' combined bounding box for rotate and scale.
+- **3D Cursor**: Uses the 3D Cursor position as the transform center.
+- **Individual Origins**: Each selected object rotates or scales around its own origin.
+- **Active Element**: Uses the pivot of the last selected active element as the transform center.
+- **World Origin**: Uses the world origin `(0, 0, 0)` as the transform center.
+
+## Graph Editing
 
 <video src="assets/videos/graph-transform.mp4" controls muted loop playsinline width="100%"></video>
 
-- `G`: move graph nodes.
-- `R`: rotate graph nodes.
-- `S`: scale graph nodes.
+Graph tools bring the same modal transform habit to Blueprint, Material, and other supported GraphEditor panels.
+
+- `G/R/S`: move / rotate / scale graph nodes.
+- `X/Y`: graph constraints.
+- `Ctrl`: graph snapping where supported.
 
 <video src="assets/videos/graph-actions.mp4" controls muted loop playsinline width="100%"></video>
 
-- `Ctrl + Shift + LMB`: click a Material node to preview it directly, without clicking the small node preview button.
-- `Ctrl + X`: delete and reconnect nodes. Compared with Unreal's native `Shift + Delete`, this also supports Material nodes.
-- `Shift + D`: duplicate nodes and enter move mode.
-- `Ctrl + RMB` drag: cut node connections by drawing across wires.
+- `Ctrl + Shift + LMB`: preview Material node.
+- `Ctrl + X`: delete and reconnect where supported.
+- `Shift + D`: duplicate and move.
 
-Graph shortcuts can be customized in BlendView settings. The graph connection cutting modifier can be changed to `Ctrl`, `Alt`, or `Shift`.
+## Experimental Features
 
-## Feedback and Interaction
+Experimental features are modules that are still being polished. They are generally usable, but may only apply to specific editor contexts or may continue to receive interaction refinements.
 
-BlendView provides Blender-style visual feedback during editing:
+### 3D Cursor
 
-![Transform feedback](assets/images/transform-feedback.jpg)
+![3D Cursor placement](assets/images/3d-cursor-placement.jpg)
 
-- Bottom hint bar: shows available actions for the current state.
-- Top value bar: shows the current transform values.
-- State cursor: shows different cursors for move, rotate, and scale states.
-- Helper lines: show transform direction, constraint direction, and snap references.
+- `Shift + RMB`: place the cursor.
 
-## Settings and Customization
+BlendView provides a Blender-style 3D Cursor: a temporary reference point that can be placed in the scene. It stores both location and rotation, and can be used as a transform center, object movement target, object origin target, or spatial reference for later alignment and editing.
+
+### Cursor and Origin Pie Menu
+
+![Cursor and origin pie menu](assets/images/cursor-origin-pie-menu.jpg)
+
+- **Cursor and Origin pie menu** quickly moves the 3D Cursor, moves selected objects to the cursor, or adjusts object origins.
+- **Open**: hold `Shift + S` to show the menu, then release `Shift` to close it.
+
+**Cursor and Origin:**
+
+- **to Origin**: Moves the 3D Cursor to the world origin and resets cursor rotation.
+- **to Selected**: Moves the 3D Cursor to the current selection; with multiple objects, moves to the combined selection center.
+- **to Cursor, Offset**: Moves the selected objects as a group to the 3D Cursor while preserving relative offsets.
+- **to Cursor**: Moves the selected objects to the 3D Cursor and aligns to the cursor rotation.
+
+**Object Origin:**
+
+- **to Geometry**: Moves the Actor pivot to its geometry center.
+- **to Cursor**: Moves the Actor pivot to the 3D Cursor position.
+- **to Active**: Moves the Actor pivot to the active element pivot.
+- **to Bottom**: Moves the Actor pivot to the bottom center of the object.
+
+### Search
+
+![Command search menu](assets/images/command-search-menu.jpg)
+
+- `F3`: search commands.
+
+BlendView provides a Blender-style `F3` command search. Type a keyword to find commands available in the current context, then left-click to execute. Right-click a command to add it to `Q` Quick Favorites; supported commands can also have shortcuts assigned or changed here.
+
+### Quick Favorites
+
+![Quick Favorites menu](assets/images/quick-favorites-menu.jpg)
+
+- `Q`: open favorites.
+
+BlendView provides a Blender-style `Q` Quick Favorites menu for frequently used commands. Press `Q` and left-click a command to execute it. Commands can be added from the `F3` search menu or removed from the right-click menu.
+
+### Move to Folder
+
+![Move to Folder menu](assets/images/move-to-folder-menu.jpg)
+
+- `M`: open the quick move menu.
+
+Similar to Blender's `M` quick move menu, this moves the selected Actors to a World Outliner folder.
+
+## Settings
 
 ![BlendView quick menu](assets/images/quick-menu.jpg)
 
-BlendView can be configured from the toolbar quick menu and the plugin settings page.
-
 ![BlendView settings panel](assets/images/settings-panel.jpg)
 
-Configurable options include:
+Settings include module toggles, shortcuts, navigation, snapping, pivot modes, center toolbar, 3D Cursor, command search, quick favorites, graph tools, hint bars, language, and experimental features.
 
-- Main plugin toggle.
-- Mouse viewport navigation.
-- RMB flight speed up with `Shift` / slow down with `Alt`.
-- Flight speed factor.
-- G/R/S transform shortcuts.
-- `Shift + D` duplicate and move.
-- `Alt + G/R/S` reset transform.
-- Snap base shortcut.
-- Snap target types.
-- Snap base mode.
-- Transform pivot mode.
-- Snap axis thickness.
-- Graph node operations.
-- Graph connection cutting shortcut.
-- Top / bottom hint display.
-- Interface language.
-
-## FAQ
-
-### How do I quickly enable or disable BlendView?
-
-Use the top toolbar button, or press the default shortcut `Ctrl + Alt + B`, to quickly enable or disable BlendView.
-
-In most cases, you do not need to disable the plugin frequently. If a shortcut conflict occurs, first change the corresponding shortcut in `Editor Preferences > BlendView`, or adjust the related native Unreal command in Unreal's keyboard shortcut settings. Unused BlendView modules can also be disabled independently.
-
-### How do I hide the bottom hint bar?
-
-Press `H` while transforming or navigating to hide or show the bottom hint bar.
-
-## Supported Areas
-
-Mouse navigation supports:
-
-- Level viewports.
-- Static Mesh preview viewports.
-- Skeletal Mesh preview viewports.
-- Animation preview viewports.
-- Blueprint preview viewports.
-- Component / Child Actor preview viewports.
-- Material preview viewports.
-
-G/R/S transforms support:
-
-- Actors in Level viewports.
-- Components, Blueprint components, and Child Actor Components in Blueprint viewports.
-- Scene components in supported asset editor viewports.
-- Move, rotate, scale, and temporary snapping in supported orthographic views.
-
-Graph operations support:
-
-- Blueprint graphs.
-- Construction Script graphs.
-- Material graphs.
-- Other parseable standard GraphEditor-based graphs.
-
-## Disclaimer
-
-BlendView is an independent Unreal Editor plugin and is not affiliated with, endorsed by, or sponsored by Blender Foundation or Epic Games.
+BlendView shortcuts take priority over native shortcuts. If Unreal has the same shortcut, BlendView will handle it first.
